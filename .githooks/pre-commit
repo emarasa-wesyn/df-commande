@@ -1,2 +1,6 @@
 #!/bin/sh
-# À compléter pendant l'exercice.
+# Refuse le commit si gitleaks trouve un secret dans les fichiers indexés.
+if ! gitleaks git -v --pre-commit --staged --no-banner --redact; then
+  echo "Commit refusé : gitleaks a détecté une fuite (voir ci-dessus)." >&2
+  exit 1
+fi

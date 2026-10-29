@@ -44,3 +44,13 @@ Link:        https://github.com/alexxzee/df-commandes-fuite/blob/91f09550e599ff2
 |-------------------------|----------------|-------------------------------------------|--------------------------|
 | DF_TRANSPORTEUR_API_KEY | .env           | 1ddf3b056cbc863c3ffe033f88d139f1ee4ecb60  | non                      |
 | TRANSPORTEUR_API_KEY    | src/config.js  | 91f09550e599ff25bed3c7d827f368c4782fdf09  | oui                      |
+
+
+## Ce qu’on fait, dans l’ordre
+1. Révoquer la clé chez le transporteur et en émettre une nouvelle : c’est la seule étape
+   qui rend la fuite inoffensive.
+2. Ranger la nouvelle clé dans .env en local et dans les secrets du dépôt pour la CI.
+3. Prévenir la récidive : clé lue dans l’environnement, .env ignoré, hook gitleaks, règle
+   dans les instructions de l’assistant.
+
+Le hook n’a pas vu : MOT_DE_PASSE_BASE (ligne 2 de piege.js), parce que le mot de passe est trop basique.

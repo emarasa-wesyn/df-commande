@@ -2,30 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5f589e09-0b08-43ea-bd0f-9bbcfb05147b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/db-forest-config.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/df-commandes.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/piege.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.githooks/pre-commit" beforeDir="false" afterPath="$PROJECT_DIR$/.githooks/pre-commit" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FORMATION.md" beforeDir="false" afterPath="$PROJECT_DIR$/FORMATION.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/decision-fusion.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/decision-fusion.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/ecarts-a-trancher.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/ecarts-a-trancher.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/failles.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/failles.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/securite.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/securite.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exercices/intersession/fidelite-caracterisation.js" beforeDir="false" afterPath="$PROJECT_DIR$/exercices/intersession/fidelite-caracterisation.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exercices/intersession/fidelite-spec.js" beforeDir="false" afterPath="$PROJECT_DIR$/exercices/intersession/fidelite-spec.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/devis/calcul.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/devis/calcul.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/legacy/export-commandes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/legacy/export-commandes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/legacy/fidelite.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/legacy/fidelite.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/clients.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/clients.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/commandes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/commandes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/devis.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/devis.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/export.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/export.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/produits.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/produits.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,7 +60,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1793006291593</updated>
-      <workItem from="1793006292723" duration="28282000" />
+      <workItem from="1793006292723" duration="28892000" />
     </task>
     <servers />
   </component>
