@@ -4,18 +4,12 @@ Fichier de la formation : ne pas modifier.
 
 ## Installation, une fois
 
-### 1. Créer votre dépôt depuis le modèle
+### 1. Cloner le dépôt et les vérificateurs, côte à côte
 
-1. Ouvrez https://github.com/alexxzee/df-commandes, connecté à votre compte GitHub.
-2. Bouton **Use this template**, puis **Create a new repository**. Propriétaire : votre compte. Nom : `df-commandes`. Cochez **Private**, puis **Create repository**.
-3. Dans votre nouveau dépôt : **Settings**, **Collaborators**, **Add people** : ajoutez le compte GitHub du formateur. Il lira votre travail ; vous restez propriétaire du dépôt.
-
-### 2. Cloner votre dépôt et les vérificateurs, côte à côte
-
-Dans votre dépôt, bouton **Code**, onglet **HTTPS** : copiez l’adresse. Puis, dans un terminal ouvert sur le dossier où vous rangez vos projets :
+Dans un terminal ouvert sur le dossier où vous rangez vos projets :
 
 ```bash
-git clone <adresse de votre dépôt>
+git clone https://github.com/alexxzee/df-commandes
 git clone https://github.com/alexxzee/df-verifications
 cd df-commandes
 npm install
@@ -24,17 +18,9 @@ npm test
 
 `npm test` se termine par `ℹ fail 0`. Les deux dossiers doivent être **côte à côte**. Ouvrez ensuite **seulement** `df-commandes` dans VS Code (**Fichier**, **Ouvrir le dossier**) : l’assistant lit tout le dossier ouvert, et `df-verifications` contient les cas attendus des exercices. Les commandes ci-dessous l’appellent, vous n’avez pas à l’ouvrir.
 
-## Rendre votre travail : un push par jour
+## Votre travail reste sur votre poste
 
-Ni branche ni pull request par exercice : vous travaillez sur `main`. En fin de journée, une fois, dans le terminal ouvert sur `df-commandes` :
-
-```bash
-git add -A
-git commit -m "Travail du jour"
-git push
-```
-
-Le formateur lit votre dépôt sur GitHub.
+Ni branche, ni pull request, ni push : vous travaillez sur `main`, dans votre dossier. Chaque exercice se vérifie par sa commande, et son corrigé vous est remis après l’exercice. En retard, `npm run reprise -- <étape>` pose l’état prêt (la fiche de l’exercice donne l’étape). Seul l’exercice de la CI vous fait créer un dépôt sur votre compte GitHub : sa fiche dit comment.
 
 ## Commandes de vérification
 
@@ -75,6 +61,6 @@ Ils existent déjà, vides : ouvrez-les et remplissez-les, sans créer de dossie
 
 Les fichiers qui commencent par le commentaire « Fichier de la formation : ne pas modifier. », ainsi que `package.json`, `package-lock.json`, `test/caracterisation/export-attendu.csv` et `exercices/confidentialite/export-clients.csv`, qui ne peuvent pas porter de commentaire.
 
-Les agents fournis sont aussi des fichiers de la formation : ne les modifiez pas. Leur en-tête doit rester en première ligne, la mention vient donc juste après lui. Ce sont `.github/agents/refacto.agent.md`, `chef-equipe-web.agent.md`, `dev-web.agent.md`, `testeur-web.agent.md` et `relecteur-web.agent.md`, les agents de l’équipe web de `.claude/agents/` (`chef-equipe-web.md`, `dev-web.md`, `testeur-web.md`, `relecteur-web.md`), et les agents fournis dans `.codex/agents/` (`refacto.toml`, `dev-web.toml`, `testeur-web.toml`, `relecteur-web.toml`). Les specs `docs/conditions-paiement.md` et `docs/programme-fidelite.md`, la constitution `specs/constitution.md` et la spec reçue `specs/annulation-commande.md` ne se modifient pas non plus.
+Les agents fournis sont aussi des fichiers de la formation : ne les modifiez pas. Leur en-tête doit rester en première ligne, la mention vient donc juste après lui. Ce sont `.github/agents/refacto.agent.md`, `chef-equipe-web.agent.md`, `dev-web.agent.md`, `testeur-web.agent.md` et `relecteur-web.agent.md`, les agents de l’équipe web de `.claude/agents/` (`chef-equipe-web.md`, `dev-web.md`, `testeur-web.md`, `relecteur-web.md`), et les agents fournis dans `.codex/agents/` (`refacto.toml`, `dev-web.toml`, `testeur-web.toml`, `relecteur-web.toml`). La spec `docs/programme-fidelite.md`, la constitution `specs/constitution.md` et la spec reçue `specs/annulation-commande.md` ne se modifient pas non plus.
 
 Les fichiers d’agent `.github/agents/relecteur-securite.agent.md` et `testeur.agent.md`, l’agent testeur de Claude Code (`.claude/agents/testeur.md`) et de Codex (`.codex/agents/testeur.toml`), les fichiers de hooks `.claude/settings.json`, `.github/hooks/proteger.json` et `.codex/hooks.json` (au format JSON, qui n’admet pas de commentaire : ils contiennent une liste de hooks vide), les instructions `AGENTS.md`, `CLAUDE.md` et `.github/copilot-instructions.md`, ainsi que les fichiers de `specs/` marqués « À compléter », sont à remplir pendant les exercices. Chaque outil lit son fichier d’instructions : Copilot `.github/copilot-instructions.md` (et `AGENTS.md`), Codex `AGENTS.md`, Claude Code `CLAUDE.md` (il ignore `AGENTS.md` dès qu’un `CLAUDE.md` existe). Ces fichiers ne renvoient pas l’un à l’autre : quand vous en remplissez plusieurs, gardez-leur le même contenu.
