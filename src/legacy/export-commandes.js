@@ -1,118 +1,76 @@
+'use strict';
+
 // Export comptable des commandes, lancé chaque nuit par le cabinet comptable.
-// Ne pas toucher : ça marche. (JM, 2021)
-const TVA = 0.2;
+// Refactorisé sous le filet des tests de caractérisation : le format de sortie
+// est identique au caractère près, y compris le TTC calculé sur le HT non arrondi.
 
-function requete(db, sql, params, cb) {
-  setImmediate(function () {
-    let resultat;
-    try {
-      const stmt = db.prepare(sql);
-      resultat = stmt.all.apply(stmt, params);
-    } catch (e) {
-      cb(e);
-      return;
-    }
-    cb(null, resultat);
-  });
-}
+const TAUX_TVA = 0.2;
+const EN_TETE = 'numero;date;client;ville;nb_lignes;total_ht;total_ttc\n';
 
-// Nombre de lignes et total HT par commande, en un seul passage sur les lignes.
-// Les lignes sont additionnées dans l'ordre de la table, comme avant, pour
-// garder exactement les mêmes arrondis.
-function cumulerLignes(lignes) {
-  const parCommande = new Map();
-  for (const ligne of lignes) {
-    let cumul = parCommande.get(ligne.commande_id);
-    if (!cumul) {
-      cumul = { nb: 0, tot: 0 };
-      parCommande.set(ligne.commande_id, cumul);
-    }
-    cumul.nb = cumul.nb + 1;
-    cumul.tot = cumul.tot + ligne.quantite * ligne.prix_unitaire;
-  }
-  return parCommande;
-}
-
-// Parcourt toute la liste sans s'arrêter : si deux clients ont le même id,
-// c'est le dernier qui l'emporte, comme dans la version d'origine.
-function trouverClient(clients, id) {
-  let trouve = null;
-  for (const client of clients) {
-    if (client.id === id) {
-      trouve = client;
-    }
-  }
-  return trouve;
-}
-
-// Arrondi au centime puis écriture à la française : virgule et deux décimales.
+/** Formate un montant en euros avec deux décimales et une virgule. */
 function formaterMontant(montant) {
-  const texte = String(Math.round(montant * 100) / 100);
-  if (texte.indexOf('.') === -1) {
-    return texte + ',00';
-  }
-  const parties = texte.split('.');
-  if (parties[1].length === 1) {
-    parties[1] = parties[1] + '0';
-  }
-  return parties[0] + ',' + parties[1];
+  return (Math.round(montant * 100) / 100).toFixed(2).replace('.', ',');
 }
 
-// Le ";" est le séparateur du CSV : on le remplace par "," dans les textes libres.
-function nettoyerChamp(texte) {
+/** Neutralise le séparateur CSV dans un texte libre. */
+function nettoyer(texte) {
   return texte.replace(/;/g, ',');
 }
 
-function ligneCsv(commande, client, cumul) {
-  const nb = cumul ? cumul.nb : 0;
-  const tot = cumul ? cumul.tot : 0;
-  const nom = nettoyerChamp(client ? client.nom : 'INCONNU');
-  const ville = nettoyerChamp(client ? client.ville : '');
-  return commande.id + ';' + commande.date + ';' + nom + ';' + ville + ';' + nb + ';'
-    + formaterMontant(tot) + ';' + formaterMontant(tot * (1 + TVA)) + '\n';
-}
-
-function ajouterActif(actifs, clientId) {
-  if (actifs.indexOf(clientId) === -1) {
-    actifs.push(clientId);
+/** Regroupe les lignes par commande : nombre de lignes et total HT brut. */
+function totauxParCommande(lignes) {
+  const totaux = new Map();
+  for (const ligne of lignes) {
+    const total = totaux.get(ligne.commande_id) || { nb: 0, ht: 0 };
+    total.nb += 1;
+    total.ht += ligne.quantite * ligne.prix_unitaire;
+    totaux.set(ligne.commande_id, total);
   }
+  return totaux;
 }
 
-function construireCsv(commandes, lignes, clients) {
-  const parCommande = cumulerLignes(lignes);
-  const actifs = [];
-  let csv = 'numero;date;client;ville;nb_lignes;total_ht;total_ttc\n';
+function ligneCsv(commande, client, total) {
+  const nom = client ? nettoyer(client.nom) : 'INCONNU';
+  const ville = client ? nettoyer(client.ville) : '';
+  return [
+    commande.id, commande.date, nom, ville, total.nb,
+    formaterMontant(total.ht), formaterMontant(total.ht * (1 + TAUX_TVA)),
+  ].join(';') + '\n';
+}
+
+/** Construit le CSV de façon synchrone à partir de la base. */
+function construireCsv(db, depuis) {
+  const commandes = db.prepare('SELECT * FROM commandes WHERE date >= ? ORDER BY date, id').all(depuis);
+  const totaux = totauxParCommande(db.prepare('SELECT * FROM lignes_commande').all());
+  const clients = new Map(db.prepare('SELECT * FROM clients').all().map((c) => [c.id, c]));
+  const actifs = new Set();
+  let csv = EN_TETE;
   for (const commande of commandes) {
-    if (commande.statut === 'annulee') {
-      continue;
-    }
-    const client = trouverClient(clients, commande.client_id);
-    csv = csv + ligneCsv(commande, client, parCommande.get(commande.id));
-    ajouterActif(actifs, commande.client_id);
+    if (commande.statut === 'annulee') continue;
+    csv += ligneCsv(commande, clients.get(commande.client_id), totaux.get(commande.id) || { nb: 0, ht: 0 });
+    actifs.add(commande.client_id);
   }
-  return csv + '# clients actifs;' + actifs.length + '\n';
+  return `${csv}# clients actifs;${actifs.size}\n`;
 }
 
+/**
+ * Exporte les commandes non annulées depuis une date, au format CSV.
+ * Contrat conservé : rappel (err, csv) appelé de façon asynchrone.
+ * @param {import('node:sqlite').DatabaseSync} db Base ouverte.
+ * @param {string} depuis Date incluse, AAAA-MM-JJ.
+ * @param {(err: Error|null, csv?: string) => void} callback
+ */
 function exporterCommandes(db, depuis, callback) {
-  requete(db, 'SELECT * FROM commandes WHERE date >= ? ORDER BY date, id', [depuis], function (err, commandes) {
-    if (err) {
+  setImmediate(() => {
+    let csv;
+    try {
+      csv = construireCsv(db, depuis);
+    } catch (err) {
       callback(err);
       return;
     }
-    requete(db, 'SELECT * FROM lignes_commande', [], function (err2, lignes) {
-      if (err2) {
-        callback(err2);
-        return;
-      }
-      requete(db, 'SELECT * FROM clients', [], function (err3, clients) {
-        if (err3) {
-          callback(err3);
-          return;
-        }
-        callback(null, construireCsv(commandes, lignes, clients));
-      });
-    });
+    callback(null, csv);
   });
 }
 
-module.exports = { exporterCommandes: exporterCommandes };
+module.exports = { exporterCommandes, formaterMontant };
