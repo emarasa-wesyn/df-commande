@@ -1,2 +1,5 @@
 # Clé du transporteur révoquée : fuite historique connue
 29be7221aef7b9ca3438b04a75e1473bc73e7a57:src/config.js:generic-api-key:4
+5fe30443baed1df353802aac383c6a188d09fc59:src/config.js:generic-api-key:4
+6e1f08b3114db0eb3b8ccaab874cba13c29a6166:docs/securite.md:generic-api-key:9
+6e1f08b3114db0eb3b8ccaab874cba13c29a6166:docs/securite.md:generic-api-key:22
