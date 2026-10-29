@@ -12,43 +12,27 @@ jobs:
   qualite:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Node 24 avec cache npm
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
-
-      - name: Installation des dépendances
-        run: npm ci
-
-      - name: Lint
-        run: npm run lint -- --max-warnings=0
-
-      - name: Tests
-        run: npm test
-
-      - name: Couverture de src/devis
-        run: >-
-          node --test --experimental-test-coverage
+      - run: npm ci
+      - run: npm run lint -- --max-warnings=0
+      - run: npm test
+      - run: >
+          node --disable-warning=ExperimentalWarning --test --experimental-test-coverage
           --test-coverage-include='src/devis/**'
-          --test-coverage-lines=80
-          --test-coverage-branches=80
+          --test-coverage-lines=80 --test-coverage-branches=80
 
   secrets:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout avec tout l'historique
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-
-      - name: Installation de gitleaks 8.30.1
-        run: |
-          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz \
-            | sudo tar xz -C /usr/local/bin gitleaks
-
-      - name: Recherche de secrets
-        run: gitleaks git -v --no-banner --redact --log-opts="HEAD" .
+      - run: |
+          V=8.30.1
+          URL=https://github.com/gitleaks/gitleaks/releases/download
+          curl -sSfL "$URL/v$V/gitleaks_${V}_linux_x64.tar.gz" | tar xz -C /usr/local/bin gitleaks
+      - run: gitleaks git -v --no-banner --redact --log-opts="HEAD" .
